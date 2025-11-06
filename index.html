@@ -1,0 +1,94 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="card">
+    <div class="search">
+      <input type="text" placeholder="Enter city name..." spellcheck="false">
+      <button>Search</button>
+    </div>
+
+    <div class="weather">
+      <img src="https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTEyL3Jhd3BpeGVsb2ZmaWNlOF9kcmF3aW5nX2NhcnRvb25fb2ZfaXNvbGF0ZWRfY2xvdWRfX2luX3N0eWxlX29mX184NDUxMmQ5OS1mM2FkLTRjYmUtOTYzMy1iYTdmZDI2ZGY2NjhfMS5wbmc.png"
+        alt="rain" class="weather-icon" width="200px" height="100px">
+      <h1 class="temp">22°C</h1>
+      <h2 class="city">New York</h2>
+      <div class="details">
+        <div class="col">
+          <img src="https://cdn-icons-png.flaticon.com/512/514/514267.png" alt="humidity" width="50px">
+          <div>
+            <div class="humidity">50%</div>
+            <p>Humidity</p>
+          </div>
+        </div>
+        <div class="col">
+          <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%23ffffff%22%20viewBox%3D%220%200%2024%2024%22%3E%0A%20%20%3Cpath%20d%3D%22M4%2010h9a3%203%200%201%200-3-3h-2a5%205%200%201%201%205%205H4v-2zm0%204h13a2%202%200%201%201-2%202h-2a4%204%200%201%200%204-4H4v2zm0%204h6a1%201%200%201%201-1%201H7a3%203%200%201%200%203-3H4v2z%22%3E%3C%2Fpath%3E%0A%3C%2Fsvg%3E%0A"
+            alt="Wind Speed Icon" width="50px" height="50px">
+          <div>
+            <div class="wind">15 km/h</div>
+            <p>Wind speed</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const apiKey = "192d470a0655b5b0176cbc2311860bfe";
+    const searchBox = document.querySelector(".search input");
+    const searchBtn = document.querySelector(".search button");
+
+    async function checkWeather(city) {
+      const apiUrl = `https://api.openweathermap.org/data/2.5/weather?units=metric&q=${city}&appid=${apiKey}`;
+      try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error("City not found");
+
+        const data = await response.json();
+
+        document.querySelector(".weather-icon").src =
+          `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+
+        document.querySelector(".city").innerHTML = data.name;
+        document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
+        document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+        document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
+        document.querySelector(".weather").style.display = "block";
+
+      } catch (error) {
+        document.querySelector(".city").innerHTML = "City not found 😞";
+        document.querySelector(".temp").innerHTML = "--°C";
+        document.querySelector(".humidity").innerHTML = "--%";
+        document.querySelector(".wind").innerHTML = "-- km/h";
+      }
+    }
+
+    searchBtn.addEventListener("click", () => {
+      const city = searchBox.value.trim();
+      if (city !== "") checkWeather(city);
+      else alert("Please enter a city name");
+    });
+
+    searchBox.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        const city = searchBox.value.trim();
+        if (city !== "") checkWeather(city);
+        else alert("Please enter a city name");
+      }
+    });
+
+    // Default city on load
+    checkWeather("Bangalore");
+  </script>
+
+</body>
+</html>
